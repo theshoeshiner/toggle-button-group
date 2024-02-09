@@ -89,25 +89,25 @@ public class ToggleButtonGroupView extends VerticalLayout {
         group20.setLabel("Status: [width-full] (Hover the mouse to see the tooltip)");
         group20.setTooltipText(String.format("Labels for original values of %s generated based on the configured itemLabelGenerator.",
                 Arrays.stream(Status.values()).map(Object::toString).collect(Collectors.joining(", "))));
-        group20.setItemLabelGenerator(status -> switch (status) {
+        /*group20.setItemLabelGenerator(status -> switch (status) {
             case NOT_PROCESSED -> "Not processed";
             case APPROVED -> "Approved";
             case DECLINED -> "Declined";
-        });
+        });*/
         group20.setItems(Status.values());
         group20.setWidthFull();
 
         ToggleButtonGroup<Direction> group30 = new ToggleButtonGroup<>();
         group30.setId("group30");
         group30.setLabel("Direction: (icons are generated based on itemIconGenerator property)");
-        group30.setItemIconGenerator(direction -> switch (direction) {
+        /* group30.setItemIconGenerator(direction -> switch (direction) {
             case LEFT -> VaadinIcon.ARROW_CIRCLE_LEFT.create();
             case RIGHT -> VaadinIcon.ARROW_CIRCLE_RIGHT.create();
             case UP -> VaadinIcon.ARROW_CIRCLE_UP.create();
             case DOWN -> VaadinIcon.ARROW_CIRCLE_DOWN.create();
             case FORWARD -> VaadinIcon.ARROW_FORWARD.create();
             case BACKWARD -> VaadinIcon.ARROW_BACKWARD.create();
-        });
+        });*/
         group30.setItems(Direction.values());
 
         ToggleButtonGroup<Answer> group40 = new ToggleButtonGroup<>();
@@ -120,7 +120,7 @@ public class ToggleButtonGroupView extends VerticalLayout {
         ToggleButtonGroup<String> group50 = new ToggleButtonGroup<>("Your Grade: [read-only] (Hover each grade for more info)",
                 List.of("A", "B", "C", "D", "F"));
         group50.setId("group50");
-        group50.setItemTooltipTextGenerator(grade ->
+        /* group50.setItemTooltipTextGenerator(grade ->
                 switch (grade) {
                     case "A" -> "90 - 100";
                     case "B" -> "75 - 89";
@@ -129,7 +129,7 @@ public class ToggleButtonGroupView extends VerticalLayout {
                     case "F" -> "0 - 49";
                     default -> throw new IllegalStateException("Unexpected value");
                 }
-        );
+        );*/
         group50.setTooltipText("Grades are calculated based on a 0-100 scale system.");
         group50.setReadOnly(true);
         Label lbl50 = new Label("Selection: ");
@@ -155,15 +155,15 @@ public class ToggleButtonGroupView extends VerticalLayout {
         ToggleButtonGroup<Desert> group70 = new ToggleButtonGroup<>("Choose desert: [unavailable items are disabled]");
         group70.setId("group70");
         group70.setItemEnabledProvider(item -> item.availableCount > 0);
-        group70.setItemOrderProvider(desert -> switch (desert.name) {
+        /* group70.setItemOrderProvider(desert -> switch (desert.name) {
             case "Jelly" -> 0;
             case "Ice Cream" -> 1;
             case "Coffee" -> 2;
             case "Chocolate Cake" -> 3;
             case "Quark" -> 4;
             default -> 1000;
-        });
-        group70.setItems(data.values().stream().toList());
+        });*/
+        group70.setItems(data.values().stream().collect(Collectors.toList()));
         group70.setItemLabelGenerator(item -> String.format("%s (%d)", item.name, item.availableCount));
         group70.addValueChangeListener(event -> {
             if (event.getOldValue() != null) {
@@ -172,18 +172,18 @@ public class ToggleButtonGroupView extends VerticalLayout {
             if (event.getValue() != null) {
                 data.get(event.getValue().name).availableCount--;
             }
-            group70.setItems(data.values().stream().toList());
+            group70.setItems(data.values().stream().collect(Collectors.toList()));
             group70.setValue(event.getValue());
         });
 
         ToggleButtonGroup<Status> group80 = new ToggleButtonGroup<>();
         group80.setId("group80");
         group80.setLabel("Status: [custom style for selected item]");
-        group80.setItemLabelGenerator(status -> switch (status) {
+        /* group80.setItemLabelGenerator(status -> switch (status) {
             case NOT_PROCESSED -> "Not processed";
             case APPROVED -> "Approved";
             case DECLINED -> "Declined";
-        });
+        });*/
         group80.setItems(Status.values());
         group80.setSelectedItemClassNameGenerator(status -> "status-" + status.name().toLowerCase());
         group80.setValue(Status.APPROVED);
@@ -193,17 +193,19 @@ public class ToggleButtonGroupView extends VerticalLayout {
                 Status.values()
         );
         group90.setId("group90");
-        group90.setItemLabelGenerator(status -> switch (status) {
+        /* group90.setItemLabelGenerator(status -> switch (status) {
             case NOT_PROCESSED -> "Not processed";
             case APPROVED -> "Approved";
             case DECLINED -> "Declined";
-        });
+        });*/
         group90.setSelectedItemClassNameGenerator(status -> "status-" + status.name().toLowerCase());
         Button customOrderButton = new Button("Custom Order", event ->
-            group90.setItemOrderProvider(status -> switch (status) {
-                case NOT_PROCESSED -> 1;
-                case APPROVED -> 0;
-                case DECLINED -> 2;
+            group90.setItemOrderProvider(status -> {switch (status) {
+                case NOT_PROCESSED: return 1;
+                case APPROVED :return 0;
+                case DECLINED :return 2;
+                default: throw new IllegalArgumentException();
+            }
             }));
         customOrderButton.setId("custom-order-btn");
         Button originalOrderButton = new Button("Original Order", event -> group90.setItemOrderProvider(null));
@@ -222,11 +224,12 @@ public class ToggleButtonGroupView extends VerticalLayout {
 
         ToggleButtonGroup<TextAlignment> group110 = new ToggleButtonGroup<>("Alignment:");
         group110.setItems(TextAlignment.values());
-        group110.setItemIconGenerator(align -> switch (align) {
-            case LEFT -> VaadinIcon.ALIGN_LEFT.create();
-            case CENTER -> VaadinIcon.ALIGN_CENTER.create();
-            case RIGHT -> VaadinIcon.ALIGN_RIGHT.create();
-        });
+        group110.setItemIconGenerator(align -> {switch (align) {
+            case LEFT : return VaadinIcon.ALIGN_LEFT.create();
+            case CENTER : return VaadinIcon.ALIGN_CENTER.create();
+            case RIGHT : return VaadinIcon.ALIGN_RIGHT.create();
+            default: throw new IllegalArgumentException();
+        }});
         group110.setItemLabelGenerator(textAlignment -> "");
         
         ToggleButtonGroup<Status> group120 = new ToggleButtonGroup<>(

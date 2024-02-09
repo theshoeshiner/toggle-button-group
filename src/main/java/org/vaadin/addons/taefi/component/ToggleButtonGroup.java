@@ -1,5 +1,20 @@
 package org.vaadin.addons.taefi.component;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -10,15 +25,9 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.ThemableLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.function.SerializableFunction;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.Serializable;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @CssImport("./addons-styles/toggle-button-group.css")
 public class ToggleButtonGroup<T> extends CustomField<T> {
@@ -122,6 +131,14 @@ public class ToggleButtonGroup<T> extends CustomField<T> {
         }
     }
 
+    public ThemableLayout getLayout() {
+        if (orientation == Orientation.HORIZONTAL) {
+           return hLayout;
+        } else {
+           return vLayout;
+        }
+    }
+    
     protected Button createButton(T item) {
         Button button = new Button(itemLabelGenerator.apply(item));
         button.addClickListener(this::buttonsActionListener);
@@ -261,6 +278,14 @@ public class ToggleButtonGroup<T> extends CustomField<T> {
         originalOrderMap.clear();
         IntStream.range(0, items.size()).forEach(i ->
                 originalOrderMap.put(itemIdGenerator.apply(items.get(i)), i));
+    }
+    
+    public void addButtonThemeVariants(ButtonVariant... v) {
+        buttonToItemMap.keySet().forEach(b -> b.addThemeVariants(v));
+    }
+    
+    public void removeButtonThemeVariants(ButtonVariant... v) {
+        buttonToItemMap.keySet().forEach(b -> b.removeThemeVariants(v));
     }
 
     public SerializableFunction<T, String> getSelectedItemClassNameGenerator() {
